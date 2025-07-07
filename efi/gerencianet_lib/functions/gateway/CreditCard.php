@@ -391,7 +391,7 @@ function createCard($params, $gnIntegration, $errorMessages, $existCharge)
     $valueDiscountWHMCSFormated = number_format((float)$valueDiscountWHMCS, 2, '.', '');
 
     $valueDiscountWHMCSinCents  = preg_replace("/[.,-]/", "", $valueDiscountWHMCSFormated);
-    $valueDiscountWHMCSinCents = ($valueDiscountWHMCSinCents != 0) ? $valueDiscountWHMCSinCents: null;
+    $valueDiscountWHMCSinCents = ($valueDiscountWHMCSinCents != 0) ? $valueDiscountWHMCSinCents : null;
 
     $percentageDiscountWHMCS    = ((100 * $valueDiscountWHMCS) / $totalItem);
 
@@ -399,7 +399,7 @@ function createCard($params, $gnIntegration, $errorMessages, $existCharge)
 
     $percentageDiscountWHMCS    = preg_replace("/[.,-]/", "", $percentageDiscountWHMCS);
 
-    
+
 
 
 
@@ -420,8 +420,11 @@ function createCard($params, $gnIntegration, $errorMessages, $existCharge)
         if ($existCharge == false) {
 
 
+            $baseUrl = rtrim($params['systemurl'], '/');
+            $callbackUrl = $baseUrl . '/modules/gateways/callback/efi/card.php';
 
-            $gnApiResult = $gnIntegration->create_charge($items, $invoiceId, $params['systemurl'] . "modules/gateways/callback/efi/card.php");
+            // Usa a URL tratada
+            $gnApiResult = $gnIntegration->create_charge($items, $invoiceId, $callbackUrl);
 
             $resultCheck = json_decode($gnApiResult, true);
 

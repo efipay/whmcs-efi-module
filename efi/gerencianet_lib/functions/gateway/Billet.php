@@ -34,7 +34,7 @@ function validationParams($params)
 
 {
 
-    
+
 
 
 
@@ -46,33 +46,26 @@ function validationParams($params)
 
     /* ********************************************* Coleta os dados do cliente ************************************************* */
 
-    if (strpos($params['paramsBoleto']['clientDocumentBillet'],'/')) {
+    if (strpos($params['paramsBoleto']['clientDocumentBillet'], '/')) {
 
-        $document = str_replace('/','',str_replace('-','',str_replace('.','',$params['paramsBoleto']['clientDocumentBillet']))); 
+        $document = str_replace('/', '', str_replace('-', '', str_replace('.', '', $params['paramsBoleto']['clientDocumentBillet'])));
+    } else {
 
-       
-
-    }else{
-
-        $document = str_replace('-','',str_replace('.','',$params['paramsBoleto']['clientDocumentBillet']));
-
+        $document = str_replace('-', '', str_replace('.', '', $params['paramsBoleto']['clientDocumentBillet']));
     }
 
     $corporateName    = $params['paramsBoleto']['clientName'];
 
     $name  = $params['paramsBoleto']['clientName'];
 
-    $phone = str_replace(' ','',str_replace('-','',str_replace('(','',str_replace(')','',$params['paramsBoleto']['clientTelephoneBillet']))));
+    $phone = str_replace(' ', '', str_replace('-', '', str_replace('(', '', str_replace(')', '', $params['paramsBoleto']['clientTelephoneBillet']))));
 
     $email = $params['paramsBoleto']['clientEmail'];
 
-    if ($document == null || $document == '')
-
-    {
+    if ($document == null || $document == '') {
 
         array_push($mensagensErros, DOCUMENT_NULL_ERROR_MESSAGE);
-
-    }else {
+    } else {
 
         if (strlen($document) <= 11) {
 
@@ -85,7 +78,6 @@ function validationParams($params)
             if (!$validations->_name($name))
 
                 array_push($mensagensErros, NAME_ERROR_MESSAGE);
-
         } else {
 
             $isJuridica = true;
@@ -101,9 +93,7 @@ function validationParams($params)
             elseif (!$validations->_corporate($corporateName))
 
                 array_push($mensagensErros, CORPORATE_ERROR_MESSAGE);
-
         }
-
     }
 
 
@@ -112,8 +102,7 @@ function validationParams($params)
 
         if (!$validations->_phone_number($phone))
 
-        array_push($mensagensErros, PHONENUMBER_ERROR_MESSAGE);
-
+            array_push($mensagensErros, PHONENUMBER_ERROR_MESSAGE);
     }
 
 
@@ -122,28 +111,24 @@ function validationParams($params)
 
         array_push($mensagensErros, EMAIL_ERROR_MESSAGE);
 
-    if($params['pagamento'] == 'credito'){
+    if ($params['pagamento'] == 'credito') {
 
         $birthDate = $params['paramsCartao']['dataNasce'];
 
         $cardNumber = $params['paramsCartao']['numCartao'];
 
-        if(!$validations->_birthdate($birthDate)){
+        if (!$validations->_birthdate($birthDate)) {
 
-            array_push($mensagensErros,BIRTHDATE_ERROR_MESSAGE);
-
+            array_push($mensagensErros, BIRTHDATE_ERROR_MESSAGE);
         }
 
-        if(!$validations->_cardNumber($cardNumber)){
+        if (!$validations->_cardNumber($cardNumber)) {
 
-            array_push($mensagensErros,CARD_ERROR_MESSAGE);
-
+            array_push($mensagensErros, CARD_ERROR_MESSAGE);
         }
-
     }
 
     return $mensagensErros;
-
 }
 
 
@@ -156,14 +141,12 @@ function getClientVariables($params)
 
     $isJuridica = true;
 
-    if (strpos($params['paramsBoleto']['clientDocumentBillet'],'/') == true) {
+    if (strpos($params['paramsBoleto']['clientDocumentBillet'], '/') == true) {
 
-        $document = str_replace('/','',str_replace('-','',str_replace('.','',$params['paramsBoleto']['clientDocumentBillet']))); 
+        $document = str_replace('/', '', str_replace('-', '', str_replace('.', '', $params['paramsBoleto']['clientDocumentBillet'])));
+    } else {
 
-    }else{
-
-        $document = str_replace('-','',str_replace('.','',$params['paramsBoleto']['clientDocumentBillet']));
-
+        $document = str_replace('-', '', str_replace('.', '', $params['paramsBoleto']['clientDocumentBillet']));
     }
 
     $corporateName    = $params['paramsBoleto']['clientName'];
@@ -172,7 +155,7 @@ function getClientVariables($params)
 
     $name  = $params['paramsBoleto']['clientName'];
 
-    $phone = str_replace(' ','',str_replace('-','',str_replace('(','',str_replace(')','',$params['paramsBoleto']['clientTelephoneBillet']))));
+    $phone = str_replace(' ', '', str_replace('-', '', str_replace('(', '', str_replace(')', '', $params['paramsBoleto']['clientTelephoneBillet']))));
 
     $email = $params['paramsBoleto']['clientEmail'];
 
@@ -213,8 +196,7 @@ function getClientVariables($params)
                 'phone_number'  => $phone
 
             );
-
-        }elseif ($sendEmailGN == "on") {
+        } elseif ($sendEmailGN == "on") {
 
             $customer = array(
 
@@ -225,8 +207,7 @@ function getClientVariables($params)
                 'email'         => $email,
 
             );
-
-        }else {
+        } else {
 
             $customer = array(
 
@@ -235,11 +216,7 @@ function getClientVariables($params)
                 'cpf'           => (string)$document
 
             );
-
         }
-
-            
-
     } else {
 
         $juridical_data = array(
@@ -273,8 +250,7 @@ function getClientVariables($params)
                 'juridical_person'  => $juridical_data
 
             );
-
-        }elseif ($sendEmailGN == "on") {
+        } elseif ($sendEmailGN == "on") {
 
             $customer = array(
 
@@ -283,19 +259,14 @@ function getClientVariables($params)
                 'juridical_person'  => $juridical_data
 
             );
-
-        }else {
+        } else {
 
             $customer = array(
 
                 'juridical_person'  => $juridical_data
 
             );
-
         }
-
-            
-
     }
 
 
@@ -303,7 +274,6 @@ function getClientVariables($params)
 
 
     return $customer;
-
 }
 
 
@@ -355,28 +325,23 @@ function existingCharge($params, $gnIntegration)
                 $resultado['code'] = $code;
 
                 return $resultado;
-
             }
-
         } else {
 
             return $resultado;
-
         }
-
     }
-
 }
 
 
 
 
 
-function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
+function createBillet($params, $gnIntegration, $errorMessages, $existCharge)
 
 {
 
-    $invoiceValues['invoiceid'] = $params['invoiceid']; 
+    $invoiceValues['invoiceid'] = $params['invoiceid'];
 
     $adminWHMCS = $params['whmcsAdmin'];
 
@@ -396,7 +361,7 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
 
     $debug            = $params['debug'];
 
-    
+
 
 
 
@@ -456,7 +421,7 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
 
         if ((float)$invoiceItem['amount'] > 0) {
 
-            $itemValue = number_format((double)$invoiceItem['amount'], 2, '.', '');
+            $itemValue = number_format((float)$invoiceItem['amount'], 2, '.', '');
 
             $itemValue = preg_replace("/[.,-]/", "", $itemValue);
 
@@ -473,13 +438,10 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
             array_push($items, $item);
 
             $totalItem += (float)$invoiceItem['amount'];
-
         } else {
 
             $valueDiscountWHMCS += (float)$invoiceItem['amount'];
-
         }
-
     }
 
 
@@ -499,7 +461,6 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
         );
 
         array_push($items, $item);
-
     }
 
 
@@ -519,18 +480,17 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
         );
 
         array_push($items, $item);
-
     }
 
 
 
-    $valueDiscountWHMCSFormated = number_format((double)$valueDiscountWHMCS, 2, '.', '');
+    $valueDiscountWHMCSFormated = number_format((float)$valueDiscountWHMCS, 2, '.', '');
 
     $valueDiscountWHMCSinCents  = preg_replace("/[.,-]/", "", $valueDiscountWHMCSFormated);
 
     $percentageDiscountWHMCS    = ((100 * $valueDiscountWHMCS) / $totalItem);
 
-    $percentageDiscountWHMCS    = number_format((double)$percentageDiscountWHMCS, 2, '.', '');
+    $percentageDiscountWHMCS    = number_format((float)$percentageDiscountWHMCS, 2, '.', '');
 
     $percentageDiscountWHMCS    = preg_replace("/[.,-]/", "", $percentageDiscountWHMCS);
 
@@ -562,7 +522,7 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
 
 
 
-    $discounGerencianetFormated = number_format((double)$discounGerencianet, 2, '.', '');
+    $discounGerencianetFormated = number_format((float)$discounGerencianet, 2, '.', '');
 
     $discounGerencianetinCents  = (float)$discounGerencianetFormated * 100;
 
@@ -602,7 +562,7 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
 
     $fineValue      = preg_replace("/[%]/", "", $fineValue);
 
-    $fineValue      = number_format((double)$fineValue, 2, '.', '');
+    $fineValue      = number_format((float)$fineValue, 2, '.', '');
 
     $fineValue      = (int)preg_replace("/[.,-]/", "", $fineValue);
 
@@ -612,7 +572,7 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
 
     $interestValue  = preg_replace("/[%]/", "", $interestValue);
 
-    $interestValue  = number_format((double)$interestValue, 3, '.', '');
+    $interestValue  = number_format((float)$interestValue, 3, '.', '');
 
     $interestValue  = (int)preg_replace("/[.,-]/", "", $interestValue);
 
@@ -634,7 +594,11 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
 
         if ($existCharge == false) {
 
-            $gnApiResult = $gnIntegration->create_charge($items, $invoiceId, $params['systemurl'] . "modules/gateways/callback/efi/billet.php");
+            $baseUrl = rtrim($params['systemurl'], '/');
+            $callbackUrl = $baseUrl . '/modules/gateways/callback/efi/billet.php';
+
+            // Usa a URL tratada
+            $gnApiResult = $gnIntegration->create_charge($items, $invoiceId, $callbackUrl);
 
             $resultCheck = json_decode($gnApiResult, true);
 
@@ -663,11 +627,9 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
                 $addtransresults = localAPI($addTransactionCommand, $addTransactionValues, $adminWHMCS);
 
                 $permitionToPay = true;
-
             } else
 
                 $permitionToPay = false;
-
         }
 
 
@@ -706,10 +668,9 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
 
                 $updatetransresults = localAPI($updateTransactionCommand, $updateTransactionValues, $adminWHMCS);
 
-                $code = $resultPaymentDecoded["data"]['pdf']['charge'] ;
+                $code = $resultPaymentDecoded["data"]['pdf']['charge'];
 
                 return $code;
-
             } else {
 
                 array_push($errorMessages, $resultPaymentDecoded['message']);
@@ -719,9 +680,7 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
                     logTransaction('efi', array('invoiceid' => $invoiceId, 'charge_id' => $chargeId, 'error' => $resultPaymentDecoded['messageAdmin']), 'Erro Efí: Geração do boleto');
 
                 return send_errors($errorMessages);
-
             }
-
         } else {
 
             array_push($errorMessages, $resultCheck['message']);
@@ -731,9 +690,7 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
                 logTransaction('efi', array('invoiceid' => $invoiceId, 'error' => $resultCheck['messageAdmin']), 'Erro Efí: Geração da cobrança');
 
             return send_errors($errorMessages);
-
         }
-
     } else {
 
         $validationErrors = array('invoiceid' => $invoiceId);
@@ -743,7 +700,6 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
         foreach ($errorMessages as $error) {
 
             array_push($validationErrors, $error);
-
         }
 
 
@@ -753,8 +709,5 @@ function createBillet($params, $gnIntegration, $errorMessages,$existCharge)
             logTransaction('efi', $validationErrors, 'Erro Efí: Validação');
 
         return send_errors($errorMessages);
-
     }
-
 }
-
