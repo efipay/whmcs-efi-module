@@ -4,7 +4,6 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\QueryException;
 use Exception;
 
-
 /**
  * Classe EfiSubscriptionDatabase
  *
@@ -14,6 +13,7 @@ class EfiSubscriptionDatabase
 {
     /**
      * Cria as tabelas de assinatura EFI se elas não existirem.
+     * Se a tabela tblsubscriptionefi já existir, remove o UNIQUE de relid (se presente).
      *
      * @return void
      */
@@ -26,11 +26,13 @@ class EfiSubscriptionDatabase
                     $table->increments('id');
                     $table->string('payment_method');
                     $table->string('customer', 10000);
-                    $table->unsignedInteger('relid')->unique();
+                    $table->unsignedInteger('relid'); // sem UNIQUE
                 });
                 logActivity('Tabela tblsubscriptionefi criada com sucesso.');
+            } else {
+                // Tabela já existe: remover UNIQUE em relid, se houver
+                self::dropUniqueRelidIfPresent();
             }
-
 
             // Criação da tabela tblschedulepaymentefi
             if (!Capsule::schema()->hasTable('tblschedulepaymentefi')) {
@@ -54,12 +56,39 @@ class EfiSubscriptionDatabase
     }
 
     /**
+     * Remove o índice UNIQUE de relid em tblsubscriptionefi, se existir.
+     *
+     * @return void
+     * @throws QueryException
+     */
+    private static function dropUniqueRelidIfPresent(): void
+    {
+        // Nome padrão gerado pelo Schema quando se usa ->unique() em relid
+        $indexName = 'tblsubscriptionefi_relid_unique';
+
+        // Obtém o nome do banco atual
+        $dbName = Capsule::connection()->getConfig('database');
+
+        // Verifica no information_schema se o índice existe
+        $exists = Capsule::table('information_schema.statistics')
+            ->where('table_schema', $dbName)
+            ->where('table_name', 'tblsubscriptionefi')
+            ->where('index_name', $indexName)
+            ->count() > 0;
+
+        if ($exists) {
+            // Executa o DROP INDEX somente se existir
+            Capsule::statement('ALTER TABLE `tblsubscriptionefi` DROP INDEX `' . $indexName . '`');
+            logActivity('Índice UNIQUE removido: ' . $indexName . ' em tblsubscriptionefi.relid.');
+        }
+    }
+
+    /**
      * Adiciona uma nova assinatura.
      *
      * @param string $paymentMethod
-     * @param int $relId
-     * @param array $customer
-     * @param string $payment_token
+     * @param int    $relId
+     * @param array  $customer
      *
      * @return bool
      */
@@ -68,8 +97,8 @@ class EfiSubscriptionDatabase
         try {
             $resultTblSubscription = Capsule::table('tblsubscriptionefi')->insert([
                 'payment_method' => $paymentMethod,
-                'relid'        => $relId,
-                'customer' => json_encode($customer)
+                'relid'          => $relId,
+                'customer'       => json_encode($customer),
             ]);
             logActivity("Assinatura adicionada com sucesso para o rel ID: $relId.");
             return ($resultTblSubscription > 0);
@@ -92,7 +121,6 @@ class EfiSubscriptionDatabase
     public static function areAllSubscriptionsPresent(array $relIds): bool
     {
         try {
-            // Conta o número de assinaturas presentes na tabela para os relIds fornecidos
             $subscriptions = Capsule::table('tblsubscriptionefi')
                 ->whereIn('relid', $relIds)
                 ->count();
@@ -105,7 +133,6 @@ class EfiSubscriptionDatabase
             throw new Exception('Erro inesperado ao buscar assinaturas: ' . $e->getMessage(), $e->getCode(), $e);
         }
     }
-
 
     /**
      * Remove uma assinatura.
@@ -131,10 +158,10 @@ class EfiSubscriptionDatabase
     /**
      * Adiciona um novo pagamento agendado.
      *
-     * @param int $invoiceId
+     * @param int    $invoiceId
      * @param string $paymentToken
      * @param string $date
-     * @param int $relId
+     * @param int    $relId
      *
      * @return bool
      */
@@ -145,7 +172,7 @@ class EfiSubscriptionDatabase
                 'invoiceid'     => $invoiceId,
                 'payment_token' => $paymentToken,
                 'date'          => $date,
-                'relid' => $relId
+                'relid'         => $relId,
             ]);
             logActivity("Pagamento agendado adicionado com sucesso para a fatura ID: $invoiceId.");
             return ($returnTblSchedule > 0);
@@ -157,6 +184,7 @@ class EfiSubscriptionDatabase
             throw new Exception('Erro inesperado ao adicionar pagamento agendado: ' . $e->getMessage(), $e->getCode(), $e);
         }
     }
+
     /**
      * Busca um pagamento agendado por ID de fatura.
      *
