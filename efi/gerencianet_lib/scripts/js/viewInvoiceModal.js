@@ -1,4 +1,4 @@
-window.onload = function() {
+window.onload = function () {
     const apiEnvironment = $("#apiEnvironment").val();
     const identificadorDaConta = $("#identificadorDaConta").val();
     const orderIsRecurring = $("#allItemsIsRecurring").val() == 1;
@@ -9,13 +9,13 @@ window.onload = function() {
     s.async = false;
     s.id = identificadorDaConta;
     if (!document.getElementById(`${identificadorDaConta}`)) { document.getElementsByTagName('head')[0].appendChild(s); };
-    $gn = { validForm: true, processed: false, done: {}, ready: function(fn) { $gn.done = fn; } };
+    $gn = { validForm: true, processed: false, done: {}, ready: function (fn) { $gn.done = fn; } };
     var linkCss = '<link rel="stylesheet" href="modules/gateways/efi/gerencianet_lib/css/viewInvoiceModal.css">';
     document.body.insertAdjacentHTML('beforeend', linkCss);
     /**
      * Função Gerencianet para gerar o payment token
      */
-    $gn.ready(function(checkout) {
+    $gn.ready(function (checkout) {
         startProcesso(checkout);
     });
 
@@ -25,7 +25,7 @@ window.onload = function() {
             url: "modules/gateways/efi/gerencianet_lib/html/btnViewModal.html",
             dataType: "html",
             cache: false,
-            success: function(dados) {
+            success: function (dados) {
                 btnModalActions(dados, checkout);
             }
         });
@@ -39,10 +39,10 @@ window.onload = function() {
      * Mascara aplicada nos inputs 
      */
     function format() {
-        $("#documentClientBillet").keydown(function() {
+        $("#documentClientBillet").keydown(function () {
             try {
                 $("#documentClientBillet").unmask();
-            } catch (e) {}
+            } catch (e) { }
 
             var tamanho = $("#documentClientBillet").val().length;
             if (tamanho < 13) {
@@ -53,7 +53,7 @@ window.onload = function() {
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -63,11 +63,11 @@ window.onload = function() {
             $(this).val(currentValue);
         });
 
-        $("#documentClientCredit").keydown(function() {
+        $("#documentClientCredit").keydown(function () {
             try {
                 $("#documentClientCredit").unmask();
 
-            } catch (e) {}
+            } catch (e) { }
 
             var tamanho = $("#documentClientCredit").val().length;
 
@@ -79,7 +79,7 @@ window.onload = function() {
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -89,10 +89,10 @@ window.onload = function() {
             $(this).val(currentValue);
         });
 
-        $("#documentClientPix").keydown(function() {
+        $("#documentClientPix").keydown(function () {
             try {
                 $("#documentClientPix").unmask();
-            } catch (e) {}
+            } catch (e) { }
 
             var tamanho = $("#documentClientPix").val().length;
 
@@ -104,7 +104,7 @@ window.onload = function() {
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -116,13 +116,13 @@ window.onload = function() {
 
 
 
-        $("#documentClientOF").keydown(function() {
-            try { $("#documentClientOF").unmask(); } catch (e) {}
+        $("#documentClientOF").keydown(function () {
+            try { $("#documentClientOF").unmask(); } catch (e) { }
             $("#documentClientOF").mask("999.999.999-99");
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -132,14 +132,14 @@ window.onload = function() {
             $(this).val(currentValue);
         });
 
-        $("#documentPJClientOF").keydown(function() {
-            try { $("#documentPJClientOF").unmask(); } catch (e) {}
+        $("#documentPJClientOF").keydown(function () {
+            try { $("#documentPJClientOF").unmask(); } catch (e) { }
 
             $("#documentPJClientOF").mask("99.999.999/9999-99");
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -162,15 +162,15 @@ window.onload = function() {
         $.ajax({
             type: "GET",
             url: "modules/gateways/efi/gerencianet_lib/functions/frontend/ajax/OpenFinanceAjaxHandler.php?participants=1",
-            success: function(response) {
+            success: function (response) {
                 var jsonData = JSON.parse(response);
                 $('#bankOF').empty();
                 $('#bankOF').append('<option value="">Escolha o banco...</option>');
-                jsonData.participantes.forEach(function(value, i) {
+                jsonData.participantes.forEach(function (value, i) {
                     $('#bankOF').append(`<option value="${value.identificador}">${value.nome}</option>`)
                 });
             },
-            error: function(error) {
+            error: function (error) {
                 console.log(`OF error: ${error.status} - ${error.statusText}`);
             }
         })
@@ -204,14 +204,16 @@ window.onload = function() {
         var brand = "null";
         if (numCartao.length >= 13) {
             // MASTERCARD
-            var regexMastercard = /^((5(([1-2]|[4-5])[0-9]{8}|0((1|6)([0-9]{7}))|3(0(4((0|[2-9])[0-9]{5})|([0-3]|[5-9])[0-9]{6})|[1-9][0-9]{7})))|((508116)\\d{4,10})|((502121)\\d{4,10})|((589916)\\d{4,10})|(2[0-9]{15})|(67[0-9]{14})|(506387)\\d{4,10})/;
+            var regexMastercard = /^(5[1-5][0-9]{14}|2(2[2-9][0-9]{12}|[3-6][0-9]{13}|7[01][0-9]{12}|720[0-9]{12}))$/;
+
             var resMastercard = regexMastercard.exec(numCartao);
             if (resMastercard) {
                 brand = "<img src='modules/gateways/efi/gerencianet_lib/images/mastercard.png' style='width:50px;' >";
                 bandeiraCartao = 'mastercard'
             }
             // ELO  
-            var regexELO = /^4011(78|79)|^43(1274|8935)|^45(1416|7393|763(1|2))|^50(4175|6699|67[0-6][0-9]|677[0-8]|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9])|^627780|^63(6297|6368|6369)|^65(0(0(3([1-3]|[5-9])|4([0-9])|5[0-1])|4(0[5-9]|[1-3][0-9]|8[5-9]|9[0-9])|5([0-2][0-9]|3[0-8]|4[1-9]|[5-8][0-9]|9[0-8])|7(0[0-9]|1[0-8]|2[0-7])|9(0[1-9]|[1-6][0-9]|7[0-8]))|16(5[2-9]|[6-7][0-9])|50(0[0-9]|1[0-9]|2[1-9]|[3-4][0-9]|5[0-8]))/;
+            var regexELO = /^(4011|4312|4389|4514|4576|5041|5067|5090|6277|6362|65[0-9]{2})/;
+
             var resELO = regexELO.exec(numCartao);
             if (resELO) {
                 brand = "<img src='modules/gateways/efi/gerencianet_lib/images/elo.png' style='width:50px;' >";
@@ -225,24 +227,13 @@ window.onload = function() {
                 bandeiraCartao = 'amex'
             }
 
-            //Diners 
-            var regexDiners = /(36[0-8][0-9]{3}|369[0-8][0-9]{2}|3699[0-8][0-9]|36999[0-9])/;
-            var resDiners = regexDiners.exec(numCartao);
-            if (resDiners) {
-                brand = "<img src='modules/gateways/efi/gerencianet_lib/images/diners.png' style='width:50px;' >";
-                bandeiraCartao = 'diners'
-            }
 
-            // Hipercard
-            var regexHipercard = /^606282|^3841(?:[0|4|6]{1})0/;
-            var resHipercard = regexHipercard.exec(numCartao);
-            if (resHipercard) {
-                brand = "<img src='modules/gateways/efi/gerencianet_lib/images/hipercard.png' style='width:50px;' >";
-                bandeiraCartao = 'hipercard'
-            }
+
+
 
             // Visa 
-            var regexVisa = /^4[0-9]{15}$/;
+            var regexVisa = /^4[0-9]{12}(?:[0-9]{3})?(?:[0-9]{3})?$/;
+
             var resVisa = regexVisa.exec(numCartao);
             if (resVisa) {
                 brand = "<img src='modules/gateways/efi/gerencianet_lib/images/visa.png' style='width:50px;' >";
@@ -731,18 +722,18 @@ window.onload = function() {
             $(buttonFinalizar).removeClass('disabled');
         }, 3000);
 
-        $(buttonFinalizar).click(function() {
+        $(buttonFinalizar).click(function () {
 
             $.ajax({
                 url: 'modules/gateways/efi/gerencianet_lib/css/bootstrap.min.css',
                 dataType: "text",
                 cache: false,
-                success: function(bootstrap) {
+                success: function (bootstrap) {
                     style = $("<style />", { id: "theme_gateway" });
                     $(style).html(bootstrap);
                     $("#modal_content").append(style);
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.log(error)
                 }
 
@@ -753,7 +744,7 @@ window.onload = function() {
                     url: "modules/gateways/efi/gerencianet_lib/html/viewInvoiceModal.html",
                     dataType: "html",
                     cache: false,
-                    success: function(modal) {
+                    success: function (modal) {
                         loadModal(modal, checkout);
                     }
                 })
@@ -784,7 +775,7 @@ window.onload = function() {
         $("#billet").attr('checked', true);
         $('.optionPaymentGerencianet').show(700);
         $('.optionPaymentGerencianet').css('display', 'flex');
-        $('.optionPaymentGerencianet').click(function(e) {
+        $('.optionPaymentGerencianet').click(function (e) {
             if (e.target.className.includes('optionPaymentGerencianet')) {
                 $("#theme_gateway").remove();
                 $('.optionPaymentGerencianet').hide(700);
@@ -792,7 +783,7 @@ window.onload = function() {
 
         });
         changePaymentOption('Gerar Boleto', 'billet');
-        $('.fechar').click(function(e) {
+        $('.fechar').click(function (e) {
             $("#theme_gateway").remove();
             $('.optionPaymentGerencianet').hide(700);
 
@@ -994,7 +985,7 @@ window.onload = function() {
         $("#documentClientBillet").on('paste', (e) => {
             try {
                 $("#documentClientBillet").unmask();
-            } catch (e) {}
+            } catch (e) { }
 
             var tamanho = e.originalEvent.clipboardData.getData('text').replaceAll('.', '').replaceAll('-', '').length;
             if (tamanho <= 11) {
@@ -1005,7 +996,7 @@ window.onload = function() {
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -1018,7 +1009,7 @@ window.onload = function() {
             try {
                 $("#documentClientCredit").unmask();
 
-            } catch (e) {}
+            } catch (e) { }
 
             var tamanho = e.originalEvent.clipboardData.getData('text').replaceAll('.', '').replaceAll('-', '').length;
 
@@ -1030,7 +1021,7 @@ window.onload = function() {
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -1042,7 +1033,7 @@ window.onload = function() {
         $("#documentClientPix").on('paste', (e) => {
             try {
                 $("#documentClientPix").unmask();
-            } catch (e) {}
+            } catch (e) { }
 
             var tamanho = e.originalEvent.clipboardData.getData('text').replaceAll('.', '').replaceAll('-', '').length;
 
@@ -1054,7 +1045,7 @@ window.onload = function() {
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -1068,13 +1059,13 @@ window.onload = function() {
         $("#documentClientOF").on('paste', (e) => {
             try {
                 $("#documentClientOF").unmask();
-            } catch (e) {}
+            } catch (e) { }
 
             $("#documentClientOF").mask("999.999.999-99");
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -1087,13 +1078,13 @@ window.onload = function() {
         $("#documentPJClientOF").on('paste', (e) => {
             try {
                 $("#documentPJClientOF").unmask();
-            } catch (e) {}
+            } catch (e) { }
 
             $("#documentPJClientOF").mask("99.999.999/9999-99");
 
             // ajustando foco
             var elem = this;
-            setTimeout(function() {
+            setTimeout(function () {
                 // mudo a posição do seletor
                 elem.selectionStart = elem.selectionEnd = 10000;
             }, 0);
@@ -1122,7 +1113,7 @@ window.onload = function() {
             var numInputCartao = $('#numCartao');
             var invoiceValue = Math.floor($('.invoice_value').val() * 100);
             if (brandOption(numInputCartao) != '' && brandOption(numInputCartao) != undefined && brandOption(numInputCartao) != null && numCartao.length >= 13) {
-                checkout.getInstallments(invoiceValue, brandOption(numInputCartao), function(error, response) {
+                checkout.getInstallments(invoiceValue, brandOption(numInputCartao), function (error, response) {
                     if (error) {
                         console.log(error)
                     } else {
@@ -1166,7 +1157,7 @@ window.onload = function() {
             var numInputCartao = $('#numCartaoMobile');
             var invoiceValue = $('.invoice_value').val() * 100;
             if (brandOption(numInputCartao) != '' && brandOption(numInputCartao) != undefined && brandOption(numInputCartao) != null && numCartao.length >= 13) {
-                checkout.getInstallments(invoiceValue, brandOption(numInputCartao), function(error, response) {
+                checkout.getInstallments(invoiceValue, brandOption(numInputCartao), function (error, response) {
                     if (error) {
                         console.log(error)
                     } else {
